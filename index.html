@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마음 기차 말하기 여행</title>
+<meta name="description" content="상황을 고르며 나의 말하기 색깔을 알아보는 국어 활동 (작품을 읽고 생각이나 느낌 나누기)">
+<style>
+:root{
+  --bg:#fdf6ea; --paper:#fffdf8; --ink:#2e2a35; --sub:#6b6474; --line:#eadfcd;
+  --a:#ec6a55; --a-soft:#fde3dc; --b:#4a8bd6; --b-soft:#dde9f9; --m:#3fa874; --m-soft:#dcf2e5;
+  --gold:#f4b73f; --gold-soft:#fff1cf; --shadow:0 6px 0 rgba(80,60,30,.12);
+  --r:22px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:18px;line-height:1.55;min-height:100vh;
+  background-image:radial-gradient(circle at 10% 15%,#fff3d8 0 120px,transparent 121px),radial-gradient(circle at 92% 80%,#e9f1fb 0 160px,transparent 161px);background-attachment:fixed}
+button{font:inherit;color:inherit;cursor:pointer}
+textarea,input{font:inherit;color:inherit}
+.hide{display:none!important}
+
+/* 머리 */
+#top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(253,246,234,.92);backdrop-filter:blur(6px);border-bottom:2px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px;background:none;border:0;padding:0}
+.brand svg{width:40px;height:40px}
+#steps{display:flex;gap:6px;margin:0 auto;flex-wrap:wrap}
+#steps span{display:flex;align-items:center;gap:6px;padding:5px 12px 5px 6px;border-radius:99px;background:#f3ead9;color:var(--sub);font-size:15px;font-weight:700}
+#steps span i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#fff;font-size:13px}
+#steps span.on{background:var(--ink);color:#fff}
+#steps span.on i{color:var(--ink)}
+#steps span.done{background:var(--m-soft);color:#24774f}
+#steps span.done i{background:var(--m);color:#fff}
+.tools{display:flex;gap:6px}
+.tbtn{border:2px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 12px;font-size:15px;font-weight:700}
+.tbtn:hover{border-color:var(--ink)}
+
+/* 본문 */
+main{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:28px}
+.center{text-align:center}
+h1{font-size:40px;line-height:1.25;margin:8px 0 10px;letter-spacing:-.5px}
+h2{font-size:28px;margin:0 0 8px;letter-spacing:-.3px}
+h3{font-size:21px;margin:0 0 8px}
+.lead{color:var(--sub);font-size:19px;margin:0 0 18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:99px;padding:14px 30px;font-weight:800;font-size:20px;background:var(--ink);color:#fff;box-shadow:0 5px 0 #000;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #000}
+.btn.ghost{background:var(--paper);color:var(--ink);border:2px solid var(--ink);box-shadow:0 5px 0 var(--line)}
+.btn.gold{background:var(--gold);color:var(--ink);box-shadow:0 5px 0 #c98d1a}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.row.c{justify-content:center}
+.row.sb{justify-content:space-between}
+.mt{margin-top:22px}
+
+/* 말풍선 */
+.guide{display:flex;gap:14px;align-items:flex-end;margin:0 auto 18px;max-width:640px;text-align:left}
+.guide svg{flex:0 0 86px;width:86px;height:86px}
+.bubble{position:relative;background:#fff;border:2px solid var(--line);border-radius:20px;padding:12px 16px;font-weight:600}
+.bubble:before{content:"";position:absolute;left:-10px;bottom:18px;width:16px;height:16px;background:#fff;border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:rotate(45deg)}
+
+/* 표지 */
+.cover{text-align:center;padding:40px 28px}
+.cover .train{width:100%;max-width:560px;height:auto;margin:0 auto 6px;display:block}
+.badge{display:inline-block;background:var(--gold-soft);color:#8a5b00;border-radius:99px;padding:4px 14px;font-weight:800;font-size:15px}
+input.name{font-size:26px;font-weight:800;text-align:center;border:3px solid var(--line);border-radius:16px;padding:12px 16px;width:min(360px,100%);background:#fff}
+input.name:focus,textarea:focus{outline:none;border-color:var(--b)}
+
+/* 단계 소개 */
+.stageNo{font-size:15px;font-weight:800;color:var(--sub);letter-spacing:2px}
+.goals{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.goals div{background:#fff;border:2px dashed var(--line);border-radius:16px;padding:14px;font-weight:700}
+.goals b{display:block;font-size:28px;line-height:1.2}
+
+/* 역 진행 */
+.stations{display:flex;gap:4px;align-items:center;margin-bottom:16px}
+.stations .st{flex:1;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:#f3ead9;color:var(--sub);font-weight:700;font-size:15px;min-width:0}
+.stations .st .ic{font-size:20px}
+.stations .st.on{background:var(--ink);color:#fff}
+.stations .st.done{background:var(--m-soft);color:#24774f}
+.stations .st span.t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pips{display:flex;gap:6px;justify-content:center;margin:6px 0 4px}
+.pips i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.pips i.done{background:var(--m)}
+.pips i.on{background:var(--ink);transform:scale(1.25)}
+
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.qtag{display:inline-block;background:var(--gold-soft);color:#8a5b00;border-radius:99px;padding:3px 12px;font-size:15px;font-weight:800}
+.qnum{color:var(--sub);font-weight:700;font-size:15px}
+.qtext{font-size:25px;font-weight:800;margin:6px 0 18px;line-height:1.45}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.opt{position:relative;text-align:left;background:#fff;border:3px solid var(--line);border-radius:20px;padding:20px 20px 20px 20px;font-size:19px;font-weight:600;line-height:1.5;min-height:140px;box-shadow:var(--shadow);transition:transform .1s,border-color .1s}
+.opt:hover{transform:translateY(-2px)}
+.opt .k{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;font-weight:900;margin-bottom:8px;color:#fff}
+.opt.A .k{background:var(--a)} .opt.B .k{background:var(--b)}
+.opt.A.sel{border-color:var(--a);background:var(--a-soft)}
+.opt.B.sel{border-color:var(--b);background:var(--b-soft)}
+.opt.dim{opacity:.45}
+.strength{margin-top:18px;text-align:center;background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px}
+.strength p{margin:0 0 10px;font-weight:700}
+.sbtn{border:3px solid var(--line);background:#fff;border-radius:99px;padding:10px 22px;font-weight:800;font-size:18px}
+.sbtn.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+/* 저울 게이지 */
+.gauge{margin:8px auto 0;max-width:640px}
+.gauge .bar{position:relative;height:22px;border-radius:99px;background:linear-gradient(90deg,var(--b) 0%,#9cc0ea 30%,var(--m) 50%,#f2a596 70%,var(--a) 100%)}
+.gauge .mark{position:absolute;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#fff;border:4px solid var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.2);transition:left .6s cubic-bezier(.3,1.6,.5,1)}
+.gauge .lbl{display:flex;justify-content:space-between;font-size:14px;font-weight:800;margin-top:6px}
+.gauge .lbl .l{color:var(--b)} .gauge .lbl .r{color:var(--a)} .gauge .lbl .c{color:var(--m)}
+.mini{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--sub)}
+.mini .gauge{flex:1;margin:0}
+.mini .gauge .bar{height:12px}
+.mini .gauge .mark{width:22px;height:22px;margin:-11px 0 0 -11px;border-width:3px}
+
+/* 결과 */
+.typeHero{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:center}
+.typeIcon{width:200px;height:200px;border-radius:50%;display:grid;place-items:center;font-size:96px;border:6px solid #fff;box-shadow:0 0 0 4px var(--line)}
+.typeName{font-size:38px;font-weight:900;margin:0;line-height:1.2}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px}
+.box ul{margin:6px 0 0;padding-left:22px}
+.box li{margin:4px 0}
+.box.good{border-color:#bfe5cf} .box.good h3{color:#24774f}
+.box.care{border-color:#f6d39a} .box.care h3{color:#a86b00}
+.areaRow{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;margin:10px 0}
+.areaRow .n{font-weight:800}
+.areaRow .gauge{margin:0;width:100%}
+.areaRow small{grid-column:2;color:var(--sub);margin-top:-6px;font-size:15px}
+.voices{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.voice{border-radius:18px;padding:18px;font-weight:600}
+.voice.a{background:var(--a-soft)} .voice.b{background:var(--b-soft)}
+.voice b{display:block;margin-bottom:6px}
+.voice p{margin:0}
+.voice .note{margin-top:10px;font-size:15px;color:var(--sub);font-weight:600}
+.mission{display:flex;gap:14px;align-items:center;background:var(--gold-soft);border-radius:18px;padding:16px 18px;font-weight:700}
+.mission .ic{font-size:34px}
+
+/* 쓰기 */
+label.q{display:block;font-weight:800;font-size:19px;margin:18px 0 6px}
+textarea,input.line{width:100%;border:3px solid var(--line);border-radius:16px;padding:12px 14px;background:#fff;font-size:18px;resize:vertical}
+textarea{min-height:88px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{border:2px dashed #cdbfa6;background:#fffaf1;border-radius:99px;padding:5px 12px;font-size:15px;font-weight:700}
+.chip:hover{border-style:solid;border-color:var(--ink)}
+.hint{font-size:15px;color:var(--sub);margin:4px 0 0}
+
+/* 말 연습 */
+.scene{display:flex;gap:16px;align-items:center;background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.scene .ic{font-size:52px;flex:0 0 auto}
+.scene p{margin:0;font-size:21px;font-weight:700}
+.says{display:grid;gap:12px}
+.say{text-align:left;background:#fff;border:3px solid var(--line);border-radius:18px;padding:16px 18px;font-size:19px;font-weight:700;box-shadow:var(--shadow)}
+.say:hover{border-color:var(--ink)}
+.say.sel.both{border-color:var(--m);background:var(--m-soft)}
+.say.sel.blunt{border-color:var(--a);background:var(--a-soft)}
+.say.sel.hide{border-color:var(--b);background:var(--b-soft)}
+.fb{margin-top:16px;border-radius:18px;padding:16px 18px;font-weight:700;display:flex;gap:12px;align-items:center}
+.fb .ic{font-size:34px}
+.fb.both{background:var(--m-soft);color:#1f6a45}
+.fb.blunt{background:var(--a-soft);color:#9b3424}
+.fb.hide{background:var(--b-soft);color:#235a98}
+.formula{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.formula div{border-radius:16px;padding:12px;text-align:center;font-weight:800}
+.formula div:nth-child(1){background:var(--a-soft)} .formula div:nth-child(2){background:var(--b-soft)} .formula div:nth-child(3){background:var(--m-soft)}
+.formula small{display:block;font-weight:600;color:var(--sub);font-size:14px}
+.preview{background:#fff;border:3px solid var(--m);border-radius:18px;padding:16px 18px;font-size:21px;font-weight:700;min-height:64px}
+.preview.empty{color:#b9ae9c;border-style:dashed;border-color:var(--line)}
+
+/* 결과지 */
+.sheet{background:#fff;border:2px solid var(--line);border-radius:var(--r);padding:32px}
+.sheet .head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:18px}
+.sheet .head h2{margin:0}
+.sheet .sec{margin:16px 0}
+.sheet .sec h3{font-size:18px;color:var(--sub);margin:0 0 6px}
+.sheet .ans{background:#fbf7ef;border-radius:12px;padding:10px 14px;min-height:44px;white-space:pre-wrap}
+.learned{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.learned div{background:var(--gold-soft);border-radius:14px;padding:12px;font-weight:700;font-size:16px}
+
+/* 창 */
+#modal{position:fixed;inset:0;background:rgba(30,25,35,.45);display:grid;place-items:center;z-index:50;padding:16px}
+#modal .card{max-width:560px;width:100%;max-height:90vh;overflow:auto}
+#modal ol{padding-left:22px}
+#modal li{margin:8px 0}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:99px;font-weight:800;z-index:60;transition:transform .3s;pointer-events:none;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:30px} h2{font-size:24px}
+  .card{padding:20px}
+  .pick,.cols,.voices,.goals,.learned{grid-template-columns:1fr}
+  .formula{grid-template-columns:1fr}
+  .typeHero{grid-template-columns:1fr;text-align:center}
+  .typeIcon{margin:0 auto;width:150px;height:150px;font-size:72px}
+  .typeName{font-size:30px}
+  .qtext{font-size:21px}
+  .opt{min-height:0}
+  .stations .st span.t{display:none}
+  .stations .st{justify-content:center}
+  .areaRow{grid-template-columns:1fr}
+  .areaRow small{grid-column:1}
+  #steps span{font-size:0;padding:4px}
+  #steps span i{font-size:13px}
+  .brand b{display:none}
+}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff;font-size:14px}
+  #top,.noprint,#toast{display:none!important}
+  main{padding:0;max-width:none}
+  .sheet{border:0;padding:0}
+  .card{box-shadow:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header id="top">
+  <button class="brand" type="button" data-act="home" aria-label="처음 화면으로"><span id="brandBird"></span><b>마음 기차 말하기 여행</b></button>
+  <nav id="steps" aria-label="진행 단계"></nav>
+  <div class="tools">
+    <button class="tbtn" type="button" data-act="help">활동 방법</button>
+    <button class="tbtn" type="button" data-act="sound" id="soundBtn">소리 켬</button>
+    <button class="tbtn" type="button" data-act="reset">새로 시작</button>
+  </div>
+</header>
+<main id="app"></main>
+<div id="modal" class="hide"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:2rem">이 활동은 자바스크립트가 켜져 있어야 해요.</p></noscript>
+
+<script>
+/* ───────── 활동 내용 ─────────
+   점수: A(바로 솔직하게 말하는 쪽) = +, B(마음을 살피며 참거나 돌려 말하는 쪽) = −
+   “아주 그래요” = 2점, “조금 그래요” = 1점 → 총점 −32 ~ +32 */
+const D = {
+  areas: [
+    { n: '말하기 역', ic: '💬', s: '내 마음 말하기',
+      intro: '하고 싶은 말이 생겼을 때 나는 어떻게 하는지 떠올려 봐요.',
+      hi: '하고 싶은 말을 바로 꺼내는 편이에요.', lo: '분위기를 살피며 말을 아끼는 편이에요.', mid: '말할 때와 기다릴 때를 고르는 편이에요.' },
+    { n: '도움말 역', ic: '💡', s: '조언하기',
+      intro: '친구에게 도움이 될 말이 떠올랐을 때 나는 어떻게 하는지 떠올려 봐요.',
+      hi: '느낀 점을 바로 알려 주는 편이에요.', lo: '친구가 속상할까 봐 말을 삼키는 편이에요.', mid: '솔직함과 조심스러움 사이를 오가는 편이에요.' },
+    { n: '지킴이 역', ic: '🛡️', s: '거절하고 지키기',
+      intro: '싫은 부탁이나 옳지 않은 일을 만났을 때 나는 어떻게 하는지 떠올려 봐요.',
+      hi: '싫은 것은 싫다고 분명하게 말하는 편이에요.', lo: '다툼이 생길까 봐 참는 편이에요.', mid: '말할 때와 참을 때를 나누는 편이에요.' },
+    { n: '화해 역', ic: '🤝', s: '다툼과 화해',
+      intro: '친구와 마음이 부딪혔을 때 나는 어떻게 하는지 떠올려 봐요.',
+      hi: '먼저 말을 꺼내고 끝까지 이야기하는 편이에요.', lo: '맞춰 주거나 기다리는 편이에요.', mid: '다가가기도 하고 기다리기도 하는 편이에요.' }
+  ],
+  sit: [
+    { a: 0, t: '점심시간 놀이', q: '친구들이 점심시간에 모두 피구를 하자고 해요. 나는 교실에서 그림을 그리고 싶어요.',
+      A: '“나는 오늘 그림 그릴래. 다음에 같이 하자.”라고 바로 말한다.', B: '혼자 빠지면 어색할 것 같아서 그냥 따라 나간다.' },
+    { a: 0, t: '모르는 내용', q: '수업 시간에 선생님 설명을 잘 이해하지 못했어요.',
+      A: '손을 들고 “한 번 더 설명해 주세요.”라고 여쭤본다.', B: '나만 모르는 것 같아 창피해서 모르는 채로 넘어간다.' },
+    { a: 0, t: '학급 회의', q: '학급 회의에서 좋은 생각이 떠올랐어요.',
+      A: '생각이 떠오르면 바로 손을 들고 말한다.', B: '내 생각이 괜찮은지 망설이다가 말할 때를 놓친다.' },
+    { a: 0, t: '가족 외식', q: '가족이 모두 피자를 먹자고 하는데, 나는 국수가 먹고 싶어요.',
+      A: '“나는 국수가 먹고 싶어요.”라고 내 마음을 말한다.', B: '다들 좋아하니까 “나도 좋아.”라고 하고 따라간다.' },
+
+    { a: 1, t: '발표 연습', q: '친구가 발표 연습을 보여 주는데, 목소리가 너무 작아서 잘 안 들려요.',
+      A: '“목소리를 조금 더 크게 하면 좋겠어.”라고 바로 알려 준다.', B: '친구가 기운이 빠질까 봐 “잘했어.”라고만 말한다.' },
+    { a: 1, t: '틀린 글자', q: '친구가 게시판에 붙일 글을 썼는데, 틀린 글자가 몇 개 보여요.',
+      A: '붙이기 전에 틀린 글자를 짚어서 알려 준다.', B: '친구가 민망해할까 봐 모른 척한다.' },
+    { a: 1, t: '숙제 미루기', q: '친구가 숙제를 미루고 게임만 했다며 웃으며 자랑해요.',
+      A: '“숙제 먼저 하는 게 좋을 것 같아.”라고 내 생각을 말한다.', B: '분위기를 깨기 싫어서 같이 웃고 넘어간다.' },
+    { a: 1, t: '모둠 주제', q: '친구가 고른 모둠 발표 주제가 내 생각에는 조금 재미없을 것 같아요.',
+      A: '“다른 주제도 생각해 보면 어때?”라고 내 의견을 말한다.', B: '친구가 열심히 골랐으니 “좋아.”라고 한다.' },
+
+    { a: 2, t: '간식 부탁', q: '친구가 매일 내 간식을 조금씩 달라고 해요. 오늘은 주고 싶지 않아요.',
+      A: '“오늘은 나도 먹고 싶어서 안 줄래.”라고 말한다.', B: '싫지만 미안해서 또 나누어 준다.' },
+    { a: 2, t: '숙제 보여 주기', q: '친구가 내 숙제를 보고 베끼게 해 달라고 해요.',
+      A: '“그건 안 돼. 대신 모르는 건 같이 풀어 보자.”라고 말한다.', B: '거절하면 사이가 나빠질까 봐 보여 준다.' },
+    { a: 2, t: '그네 순서', q: '놀이터에서 몇몇 친구가 그네 순서를 지키지 않고 계속 타요.',
+      A: '“우리 순서대로 타자.”라고 직접 말한다.', B: '괜히 다툴까 봐 다른 놀이를 하러 간다.' },
+    { a: 2, t: '놀리는 별명', q: '친구들이 한 친구를 싫어하는 별명으로 부르며 웃고 있어요.',
+      A: '“그 별명은 싫어하잖아. 부르지 말자.”라고 말한다.', B: '나까지 놀림받을까 봐 아무 말도 하지 않는다.' },
+
+    { a: 3, t: '망가진 물건', q: '친구의 지우개를 빌려 쓰다가 실수로 반으로 부러뜨렸어요.',
+      A: '바로 친구에게 사실대로 말하고 사과한다.', B: '말하기가 겁나서 슬쩍 돌려놓고 모른 척한다.' },
+    { a: 3, t: '역할 정하기', q: '모둠 역할을 정하다가 친구와 하고 싶은 역할이 겹쳤어요.',
+      A: '내가 그 역할을 하고 싶은 까닭을 끝까지 설명한다.', B: '다투기 싫어서 바로 양보한다.' },
+    { a: 3, t: '서운하다는 말', q: '친구가 나 때문에 서운했다고 말해요. 나는 조금 억울해요.',
+      A: '“그런 뜻이 아니었어.”라며 내 이야기를 바로 설명한다.', B: '일이 커질까 봐 “미안해.”라고만 하고 넘어간다.' },
+    { a: 3, t: '다툰 다음 날', q: '어제 다툰 친구를 아침에 교문 앞에서 만났어요.',
+      A: '내가 먼저 “안녕, 어제 일 이야기해 볼래?”라고 말을 건다.', B: '친구가 먼저 말 걸어 주기를 기다린다.' }
+  ],
+  /* min 이상이면 그 성향 (위에서부터) */
+  types: [
+    { k: 'a2', n: '불꽃 직진형', ic: '🔥', col: '#fde0d8', min: 16, tag: '생각이 떠오르면 곧바로 말하는 용감한 여행자',
+      good: ['내 생각을 숨기지 않아서 친구들이 내 마음을 정확히 알아요.', '옳지 않은 일 앞에서 용기를 낼 수 있어요.', '어려운 이야기도 피하지 않고 꺼내요.'],
+      care: ['맞는 말도 말투와 때에 따라 친구에게 아프게 들릴 수 있어요.', '말하기 전에 “듣는 친구 마음은 어떨까?”를 한 번 떠올려 봐요.'],
+      go: '맞는 말 뒤에 친구 마음을 살피는 한마디 붙이기' },
+    { k: 'a1', n: '햇살 솔직형', ic: '☀️', col: '#ffeccc', min: 6, tag: '내 마음을 또렷하게 전하는 씩씩한 여행자',
+      good: ['하고 싶은 말을 분명하게 전할 수 있어요.', '필요할 때는 친구 마음도 살필 줄 알아요.', '좋은 것은 좋다고, 싫은 것은 싫다고 말해요.'],
+      care: ['말을 서두르다가 친구의 표정을 놓칠 때가 있어요.', '말하기 전에 숨을 한 번 쉬고 친구 얼굴을 살펴봐요.'],
+      go: '말하기 전에 숨 한 번 쉬고 친구 표정 살피기' },
+    { k: 'mid', n: '무지개 균형형', ic: '🌈', col: '#dcf2e5', min: -5, tag: '내 마음과 친구 마음을 함께 챙기는 여행자',
+      good: ['상황에 따라 말하기와 들어 주기를 고를 수 있어요.', '내 마음과 친구 마음을 모두 생각해요.', '다툼이 커지기 전에 균형을 잡아요.'],
+      care: ['가끔은 “내 마음은 어느 쪽이지?” 하고 헷갈릴 수 있어요.', '어려운 상황일수록 내 마음을 한 줄이라도 말해 봐요.'],
+      go: '어려운 상황에서도 내 마음 한 줄 말하기' },
+    { k: 'b1', n: '달빛 살핌형', ic: '🌙', col: '#dde9f9', min: -15, tag: '친구의 마음을 먼저 살피는 다정한 여행자',
+      good: ['듣는 친구의 마음을 잘 헤아려요.', '다툼을 부드럽게 풀 수 있어요.', '친구가 편안하게 이야기하도록 도와요.'],
+      care: ['내 마음이 자꾸 뒤로 밀리면 속상한 마음이 쌓일 수 있어요.', '작은 일부터 내 마음을 말해 보면 좋아요.'],
+      go: '“나는 이게 좋아.”를 작게라도 말하기' },
+    { k: 'b2', n: '솜구름 배려형', ic: '☁️', col: '#ebe4f7', min: -99, tag: '분위기와 친구 마음을 소중히 여기는 포근한 여행자',
+      good: ['친구를 편안하게 해 줘요.', '다툼을 크게 만들지 않아요.', '조용히 친구를 챙길 줄 알아요.'],
+      care: ['참기만 하면 내 마음이 힘들고, 친구도 내 진짜 마음을 몰라요.', '참는 것과 말하지 않는 것은 달라요.'],
+      go: '작은 일부터 “나는 ○○이 좋아.”라고 말하기' }
+  ],
+  both: {
+    a: { n: '바로 말하는 친구의 마음', say: '“말하지 않으면 친구가 내 마음을 어떻게 알겠어? 솔직하게 말해야 오해가 없어.”', note: '맞는 말에 친구 마음을 함께 담으면 더 잘 전해져요.' },
+    b: { n: '마음을 살피는 친구의 마음', say: '“내 말 때문에 친구가 속상하면 어떡하지? 분위기가 깨질까 봐 말하기가 어려워.”', note: '친구를 아끼는 마음은 소중해요. 그래도 내 마음을 말해야 친구가 알 수 있어요.' }
+  },
+  /* 4단계 말 고르기: blunt(날카로운 말) · hide(감추는 말) · both(내 마음 + 친구 마음) */
+  say: [
+    { ic: '🎁', t: '생일 선물', q: '친구가 생일 선물로 필통을 줬는데, 색이 내 취향이 아니에요. 친구가 “마음에 들어?” 하고 물어요.',
+      o: [['음…… 이 색은 별로야.', 'blunt'], ['완전 최고야! (속으로는 아쉽다.)', 'hide'], ['챙겨 줘서 정말 고마워. 색은 조금 낯설지만 잘 쓸게.', 'both']] },
+    { ic: '📚', t: '시끄러운 짝', q: '문제를 푸는데 짝이 옆에서 계속 말을 걸어서 집중이 안 돼요.',
+      o: [['조용히 좀 해! 시끄러워!', 'blunt'], ['(대답은 해 주면서 속으로만 답답해한다.)', 'hide'], ['지금 문제에 집중하고 싶어. 쉬는 시간에 이야기하자.', 'both']] },
+    { ic: '🗂️', t: '모둠 발표 준비', q: '내일이 모둠 발표인데, 한 친구가 맡은 부분을 해 오지 않았어요.',
+      o: [['너 때문에 발표 다 망치겠어.', 'blunt'], ['괜찮아, 내가 다 할게. (속으로는 화가 난다.)', 'hide'], ['준비가 안 돼서 나도 걱정돼. 지금 같이 나눠서 해 보자.', 'both']] },
+    { ic: '🎨', t: '장난 낙서', q: '친구가 장난으로 내가 아끼는 그림에 낙서를 했어요.',
+      o: [['너 진짜 짜증 나! 저리 가!', 'blunt'], ['(하하 웃어넘기고 집에 가서 속상해한다.)', 'hide'], ['장난인 건 알지만 아끼는 그림이라 속상해. 다음엔 하지 말아 줘.', 'both']] }
+  ],
+  sayOrder: [[2, 0, 1], [0, 2, 1], [1, 0, 2], [0, 1, 2]],
+  sayFb: {
+    blunt: ['😣', '틀린 말은 아니어도 듣는 친구의 마음이 아플 수 있어요. 내 마음에 친구 마음을 함께 담아 볼까요?'],
+    hide: ['🤐', '친구를 아끼는 마음은 좋아요. 그런데 속마음을 감추면 친구는 내 진짜 마음을 알 수 없어요.'],
+    both: ['🌟', '내 마음을 말하면서 친구의 마음도 살폈어요. 이런 말이 마음을 잘 전하는 말이에요!']
+  },
+  /* 4단계 고쳐 말하기: 성향 쪽에 따라 고칠 말이 달라짐 */
+  fix: {
+    a: { sit: '친구가 정한 놀이가 마음에 들지 않아요.', said: '“그 놀이 재미없어. 난 안 할래.”', why: '내 마음은 분명하지만 친구 마음이 빠졌어요.' },
+    b: { sit: '친구가 같이 도서관에 가자고 하는데, 나는 운동장에서 놀고 싶어요.', said: '“응…… 좋아. (속으로는 싫다.)”', why: '친구 마음은 챙겼지만 내 마음이 빠졌어요.' },
+    m: { sit: '친구가 새로 산 모자를 보여 주는데, 내 취향은 아니에요.', said: '“그거 별로야. 왜 샀어?”', why: '내 마음만 있고 친구 마음이 빠졌어요.' }
+  },
+  mine: {
+    c1: ['나는 ○○해서 마음이 불편했어.', '나는 ○○라고 생각해.', '나는 ○○이 더 좋아.'],
+    c2: ['네 마음은 알겠어.', '네가 ○○해서 그랬구나.', '말해 줘서 고마워.'],
+    c3: ['다음에는 ○○해 주면 좋겠어.', '우리 ○○해 보면 어때?', '같이 ○○하자.']
+  },
+  story: {
+    like: ['나도 ○○할 때가 있어요.', '나는 ○○한 점이 비슷해요.', '나도 그 마음을 알 것 같아요.'],
+    diff: ['나는 ○○한 점이 달라요.', '나라면 ○○했을 것 같아요.', '나는 그렇게 하지 못해요.'],
+    ask: ['비슷한 경험을 한 적이 있나요?', '내가 그 인물이라면 어떻게 했을까요?', '그 인물에게 어떤 말을 해 주고 싶나요?', '마음을 말할 때 가장 어려운 점은 무엇인가요?']
+  },
+  stages: [
+    { n: 1, t: '상황 탐험', j: '을', goal: '마음 기차를 타고 네 개의 역에서 16가지 상황을 만나요.', learn: ['나와 더 가까운 쪽 고르기', '얼마나 그런지 고르기', '저울이 기우는 것 보기'] },
+    { n: 2, t: '성향 결과', j: '를', goal: '내 말하기 저울이 어느 쪽으로 기울었는지 알아봐요.', learn: ['내 말하기 색깔 알기', '좋은 점과 조심할 점', '반대쪽 마음 헤아리기'] },
+    { n: 3, t: '이야기와 나', j: '를', goal: '교과서 이야기 속 인물과 나를 견주어 봐요.', learn: ['닮은 점 찾기', '다른 점 찾기', '친구에게 할 질문 만들기'] },
+    { n: 4, t: '말 연습', j: '을', goal: '내 마음과 친구 마음을 함께 담아 말해 봐요.', learn: ['알맞은 말 고르기', '아쉬운 말 고쳐 쓰기', '소리 내어 말해 보기'] }
+  ],
+  help: [
+    ['상황 탐험', '16가지 상황에서 A와 B 가운데 나와 더 가까운 쪽을 고르고, 얼마나 그런지도 골라요. 정답은 없어요.'],
+    ['성향 결과', '저울이 기운 쪽이 나의 말하기 색깔이에요. 좋은 점과 조심할 점을 함께 알아봐요.'],
+    ['이야기와 나', '교과서 이야기 속 인물과 나의 닮은 점, 다른 점을 써요. 친구와 나눌 질문도 만들어요.'],
+    ['말 연습', '내 마음과 친구 마음을 함께 담은 말을 골라 보고, 아쉬운 말을 고쳐 써요.'],
+    ['저장하기', '기록은 이 기기의 브라우저에만 저장돼요. 마지막 화면에서 인쇄하거나 PDF로 저장할 수 있어요.']
+  ],
+  learned: ['솔직하게 말하기와 친구 마음 살피기는 함께 할 수 있어요.', '더 좋은 성향은 없어요. 서로 다를 뿐이에요.', '말하기 전에 “내 마음”과 “친구 마음”을 함께 떠올려요.']
+};
+
+/* ───────── 상태 ───────── */
+const KEY = 'maumgicha-v1', PKEY = 'maumgicha-pref';
+const fresh = () => ({ phase: 'cover', name: '', qi: 0, ans: [], story: { who: '', like: '', diff: '', ask: '' }, si: 0, picks: [], first: [], mine: { c1: '', c2: '', c3: '' }, done: [] });
+let S = fresh();
+try { const o = JSON.parse(localStorage.getItem(KEY)); if (o && o.phase) S = Object.assign(fresh(), o); } catch (e) {}
+let PREF = { mute: false };
+try { const p = JSON.parse(localStorage.getItem(PKEY)); if (p) PREF.mute = !!p.mute; } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function savePref() { try { localStorage.setItem(PKEY, JSON.stringify(PREF)); } catch (e) {} }
+
+/* ───────── 소리 (파일 없이 만든 효과음) ───────── */
+let AC = null;
+function tone(fs, len = .12, type = 'sine', vol = .15) {
+  if (PREF.mute) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    fs.forEach((f, i) => {
+      const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + i * len;
+      o.type = type; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + len * 1.6);
+      o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + len * 1.7);
+    });
+  } catch (e) {}
+}
+const sfx = {
+  tap: () => tone([660], .06, 'triangle', .1),
+  pick: () => tone([523, 784], .07, 'triangle'),
+  good: () => tone([523, 659, 784, 1047], .1),
+  soft: () => tone([392, 330], .12, 'triangle', .1),
+  stamp: () => tone([196, 392, 784], .09, 'square', .07),
+  done: () => tone([523, 659, 784, 659, 784, 1047], .11)
+};
+
+/* ───────── 도우미 ───────── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nm = () => esc(S.name || '여행자');
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('on'), 1800); }
+function go(phase, extra) { Object.assign(S, { phase }, extra || {}); save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function score() { return S.ans.reduce((s, a) => s + (a && a.c ? (a.c === 'A' ? a.w : -a.w) : 0), 0); }
+function areaScore(i) { let s = 0; D.sit.forEach((q, k) => { const a = S.ans[k]; if (q.a === i && a && a.c) s += a.c === 'A' ? a.w : -a.w; }); return s; }
+function myType() { const s = score(); return D.types.find(t => s >= t.min); }
+function side() { const k = myType().k; return k[0] === 'a' ? 'a' : k[0] === 'b' ? 'b' : 'm'; }
+
+/* 안내 새 '토리' (기관사 모자를 쓴 동그란 새) */
+function tori(mood) {
+  const eye = mood === 'happy' ? '<path d="M37 47q4-5 8 0M55 47q4-5 8 0" stroke="#2e2a35" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="41" cy="47" r="4.2" fill="#2e2a35"/><circle cx="59" cy="47" r="4.2" fill="#2e2a35"/><circle cx="42.4" cy="45.6" r="1.4" fill="#fff"/><circle cx="60.4" cy="45.6" r="1.4" fill="#fff"/>';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <ellipse cx="50" cy="94" rx="26" ry="4" fill="rgba(0,0,0,.08)"/>
+    <path d="M18 62q-10 4-8 16 8-2 12-8z" fill="#f2a43a"/><path d="M82 62q10 4 8 16-8-2-12-8z" fill="#f2a43a"/>
+    <circle cx="50" cy="58" r="33" fill="#ffc94d"/>
+    <ellipse cx="50" cy="70" rx="20" ry="16" fill="#fff3d2"/>
+    <circle cx="30" cy="58" r="5" fill="#ff9d8a" opacity=".6"/><circle cx="70" cy="58" r="5" fill="#ff9d8a" opacity=".6"/>
+    ${eye}
+    <path d="M45 55l5 7 5-7z" fill="#ec6a55"/>
+    <path d="M22 34q28-22 56 0v6H22z" fill="#4a8bd6"/><rect x="18" y="37" width="64" height="7" rx="3.5" fill="#2f5f9e"/>
+    <circle cx="50" cy="28" r="4.5" fill="#ffc94d" stroke="#2f5f9e" stroke-width="2"/>
+    <path d="M44 88l-3 6M56 88l3 6" stroke="#f2a43a" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
+}
+function guide(text, mood) { return `<div class="guide">${tori(mood)}<div class="bubble">${text}</div></div>`; }
+
+/* 표지 기차 그림 */
+function train() {
+  const cars = [['#ec6a55', '💬'], ['#f4b73f', '💡'], ['#3fa874', '🛡️'], ['#4a8bd6', '🤝']];
+  let x = 150, g = '';
+  cars.forEach(([c, e]) => {
+    g += `<g transform="translate(${x},70)"><rect width="88" height="60" rx="12" fill="${c}"/><rect x="12" y="12" width="64" height="26" rx="8" fill="#fff" opacity=".9"/>
+      <text x="44" y="32" font-size="18" text-anchor="middle">${e}</text><circle cx="20" cy="64" r="9" fill="#2e2a35"/><circle cx="68" cy="64" r="9" fill="#2e2a35"/></g>`;
+    x += 98;
+  });
+  return `<svg class="train" viewBox="0 0 560 150" aria-hidden="true">
+    <path d="M0 144h560" stroke="#cdbfa6" stroke-width="4"/><path d="M10 144v-4M40 144v-4M70 144v-4M100 144v-4M130 144v-4M160 144v-4M190 144v-4M220 144v-4M250 144v-4M280 144v-4M310 144v-4M340 144v-4M370 144v-4M400 144v-4M430 144v-4M460 144v-4M490 144v-4M520 144v-4M550 144v-4" stroke="#cdbfa6" stroke-width="6"/>
+    <g transform="translate(30,40)"><rect x="0" y="30" width="112" height="60" rx="14" fill="#2e2a35"/><rect x="58" y="0" width="54" height="54" rx="12" fill="#2e2a35"/>
+      <rect x="68" y="10" width="34" height="24" rx="6" fill="#fff3d2"/><rect x="14" y="10" width="20" height="24" rx="4" fill="#2e2a35"/>
+      <circle cx="24" cy="2" r="9" fill="#fff" opacity=".8"/><circle cx="8" cy="-10" r="7" fill="#fff" opacity=".6"/>
+      <circle cx="28" cy="94" r="11" fill="#ec6a55"/><circle cx="84" cy="94" r="11" fill="#ec6a55"/>
+      <g transform="translate(62,-30) scale(.46)">${tori('happy').replace(/<\/?svg[^>]*>/g, '')}</g></g>
+    ${g}</svg>`;
+}
+
+function gauge(s, max, mini) {
+  const p = Math.max(0, Math.min(100, (s + max) / (2 * max) * 100));
+  return `<div class="gauge"><div class="bar"><div class="mark" style="left:${p}%"></div></div>${mini ? '' : '<div class="lbl"><span class="l">◀ 마음 살피기</span><span class="c">균형</span><span class="r">바로 말하기 ▶</span></div>'}</div>`;
+}
+
+/* ───────── 화면 ───────── */
+const STEP_OF = { cover: 0, name: 0, intro: 0, q: 1, result: 2, story: 3, say: 4, mine: 4, final: 5 };
+function curStep() { return S.phase === 'intro' ? S.stage : STEP_OF[S.phase]; }
+function updateSteps() {
+  const c = curStep();
+  $('#steps').innerHTML = D.stages.map(s => `<span class="${s.n === c ? 'on' : S.done.includes(s.n) ? 'done' : ''}"><i>${S.done.includes(s.n) ? '✓' : s.n}</i>${s.t}</span>`).join('');
+  $('#soundBtn').textContent = PREF.mute ? '소리 끔' : '소리 켬';
+  $('#soundBtn').setAttribute('aria-pressed', String(!PREF.mute));
+}
+
+const V = {
+  cover() {
+    const going = !!S.name;
+    return `<section class="card cover pop">${train()}
+      <span class="badge">국어 · 작품을 읽고 생각이나 느낌 나누기</span>
+      <h1>마음 기차 말하기 여행</h1>
+      <p class="lead">16가지 상황을 지나며 나의 <b>말하기 색깔</b>을 찾아요.<br>솔직하게 말하기와 친구 마음 살피기, 나는 어느 쪽에 더 가까울까요?</p>
+      <div class="row c">${going ? `<button class="btn gold" data-act="continue">이어서 하기</button><button class="btn ghost" data-act="reset">처음부터</button>` : `<button class="btn gold" data-act="toName">여행 시작하기 🚂</button>`}</div></section>`;
+  },
+  name() {
+    return `<section class="card center fade">${guide('안녕! 나는 마음 기차 기관사 <b>토리</b>야.<br>함께 여행할 친구의 이름을 알려 줄래?', 'happy')}
+      <input class="name" id="nameIn" maxlength="12" placeholder="이름을 써요" value="${esc(S.name)}" autocomplete="off">
+      <p class="hint">정답이 없는 활동이에요. 솔직하게 골라야 저울이 내 마음을 정확히 보여 줘요.</p>
+      <div class="row c mt"><button class="btn" data-act="setName">출발! 🚂</button></div></section>`;
+  },
+  intro() {
+    const st = D.stages[S.stage - 1];
+    const say = { 1: `${nm()}, 기차가 곧 출발해!<br>두 가지 모두 맞는 말 같아도 <b>나와 더 가까운 쪽</b>을 골라 봐.`, 2: `16개 상황을 모두 지나왔어!<br>${nm()}의 저울이 어느 쪽으로 기울었는지 볼까?`, 3: `이번에는 교과서 이야기를 떠올려 봐.<br>이야기 속 인물과 ${nm()}는 얼마나 닮았을까?`, 4: `마지막 역이야!<br>내 마음과 친구 마음을 <b>함께</b> 담아 말해 보자.` }[S.stage];
+    return `<section class="card center fade"><div class="stageNo">${st.n}단계</div><h2>${st.t}</h2><p class="lead">${st.goal}</p>
+      ${guide(say)}<div class="goals">${st.learn.map((l, i) => `<div><b>${['①', '②', '③'][i]}</b>${l}</div>`).join('')}</div>
+      <button class="btn gold" data-act="startStage">시작하기</button></section>`;
+  },
+  q() {
+    const i = S.qi, q = D.sit[i], ar = D.areas[q.a], a = S.ans[i] || {}, inArea = i % 4;
+    const stations = D.areas.map((x, k) => `<div class="st ${k === q.a ? 'on' : k < q.a ? 'done' : ''}"><span class="ic">${k < q.a ? '✅' : x.ic}</span><span class="t">${x.n}</span></div>`).join('');
+    const pips = [0, 1, 2, 3].map(k => `<i class="${k === inArea ? 'on' : k < inArea ? 'done' : ''}"></i>`).join('');
+    const opt = k => `<button class="opt ${k} ${a.c === k ? 'sel' : a.c ? 'dim' : ''}" data-act="choose" data-c="${k}"><span class="k">${k}</span><br>${q[k]}</button>`;
+    return `<div class="stations">${stations}</div>
+      <section class="card fade"><div class="qhead"><span class="qtag">${ar.ic} ${ar.n} · ${q.t}</span><span class="qnum">${i + 1} / 16</span></div>
+      <div class="pips">${pips}</div>
+      <div class="qtext">${q.q}</div>
+      <div class="pick">${opt('A')}${opt('B')}</div>
+      <div class="strength ${a.c ? '' : 'hide'}" id="strength"><p>${a.c ? `<b>${a.c}</b>가 나와 얼마나 닮았나요?` : ''}</p>
+        <div class="row c"><button class="sbtn ${a.w === 2 ? 'sel' : ''}" data-act="weight" data-w="2">아주 그래요</button><button class="sbtn ${a.w === 1 ? 'sel' : ''}" data-act="weight" data-w="1">조금 그래요</button></div></div>
+      <div class="row sb mt"><button class="btn ghost" data-act="prevQ" ${i === 0 ? 'disabled' : ''}>◀ 이전</button>
+        <div class="mini noprint" style="flex:1;max-width:340px">살피기 ${gauge(score(), 32, true)} 말하기</div>
+        <button class="btn" data-act="nextQ" ${a.c && a.w ? '' : 'disabled'}>${i === 15 ? '결과 보기 ▶' : '다음 ▶'}</button></div></section>`;
+  },
+  result() {
+    const t = myType(), s = score(), opp = side() === 'a' ? D.both.b : side() === 'b' ? D.both.a : null;
+    const areas = D.areas.map((ar, i) => { const v = areaScore(i); return `<div class="areaRow"><div class="n">${ar.ic} ${ar.n}</div>${gauge(v, 8, true)}<small>${v >= 3 ? ar.hi : v <= -3 ? ar.lo : ar.mid}</small></div>`; }).join('');
+    const voices = opp ? `<div class="voice ${opp === D.both.a ? 'a' : 'b'}"><b>${opp.n}</b><p>${opp.say}</p><p class="note">${opp.note}</p></div>
+        <div class="box"><h3>💭 생각해 봐요</h3><p style="margin:0">나와 반대쪽 친구는 왜 그렇게 말하거나 참을까요? 그 친구의 마음을 한 문장으로 써 봐요.</p></div>`
+      : `<div class="voice a"><b>${D.both.a.n}</b><p>${D.both.a.say}</p></div><div class="voice b"><b>${D.both.b.n}</b><p>${D.both.b.say}</p></div>`;
+    return `<section class="card fade"><div class="typeHero"><div class="typeIcon pop" style="background:${t.col}">${t.ic}</div>
+      <div><div class="stageNo">${nm()}의 말하기 색깔</div><p class="typeName">${t.n}</p><p class="lead" style="margin:4px 0 12px">${t.tag}</p>${gauge(s, 32)}</div></div></section>
+      <section class="card mt fade"><h3>🚉 역마다 나는 이랬어요</h3>${areas}</section>
+      <div class="cols mt"><div class="box good"><h3>👍 좋은 점</h3><ul>${t.good.map(x => `<li>${x}</li>`).join('')}</ul></div>
+        <div class="box care"><h3>🔎 조심할 점</h3><ul>${t.care.map(x => `<li>${x}</li>`).join('')}</ul></div></div>
+      <div class="mission mt"><span class="ic">🎯</span><div><small>나의 말하기 미션</small><br>${t.go}</div></div>
+      <section class="card mt"><h3>🔄 반대쪽 마음도 헤아려요</h3><div class="voices">${voices}</div>
+        ${opp ? `<textarea id="oppIn" data-f="opp" placeholder="예) 그 친구는 ○○해서 그렇게 했을 것 같아요." style="margin-top:14px">${esc(S.opp || '')}</textarea>` : ''}</section>
+      <div class="row sb mt"><button class="btn ghost" data-act="redoQ">◀ 다시 고르기</button><button class="btn" data-act="finishStage" data-n="2">3단계로 ▶</button></div>`;
+  },
+  story() {
+    const st = S.story, chips = (arr, f) => `<div class="chips">${arr.map(c => `<button class="chip" data-act="chip" data-f="${f}" data-t="${esc(c)}">${c}</button>`).join('')}</div>`;
+    return `<section class="card fade">${guide('교과서에서 읽은 이야기를 떠올려 봐.<br>인물이 마음을 어떻게 말했는지 생각하며 써 보자!')}
+      <label class="q" for="whoIn">📖 나와 견주어 볼 인물은 누구인가요?</label>
+      <input class="line" id="whoIn" data-f="who" placeholder="인물 이름을 써요" value="${esc(st.who)}">
+      <label class="q" for="likeIn">🤝 그 인물과 내가 닮은 점</label>
+      <textarea id="likeIn" data-f="like" placeholder="인물이 한 말이나 행동을 떠올리며 써요">${esc(st.like)}</textarea>${chips(D.story.like, 'like')}
+      <label class="q" for="diffIn">↔️ 그 인물과 내가 다른 점</label>
+      <textarea id="diffIn" data-f="diff" placeholder="나라면 어떻게 했을지 떠올리며 써요">${esc(st.diff)}</textarea>${chips(D.story.diff, 'diff')}
+      <label class="q" for="askIn">❓ 친구와 나눌 질문 만들기</label>
+      <p class="hint">질문 하나를 고르거나 직접 만들어요.</p>
+      <div class="chips">${D.story.ask.map(c => `<button class="chip" data-act="pickAsk" data-t="${esc(c)}" style="${st.ask === c ? 'border-style:solid;border-color:#2e2a35;background:#fff1cf' : ''}">${c}</button>`).join('')}</div>
+      <input class="line" id="askIn" data-f="ask" style="margin-top:10px" placeholder="내가 만든 질문" value="${esc(st.ask)}">
+      </section>
+      <div class="row sb mt"><button class="btn ghost" data-act="toResult">◀ 결과 다시 보기</button><button class="btn" data-act="finishStage" data-n="3">4단계로 ▶</button></div>`;
+  },
+  say() {
+    const i = S.si, sc = D.say[i], pick = S.picks[i];
+    const opts = D.sayOrder[i].map(k => { const [txt, kind] = sc.o[k]; return `<button class="say ${pick === kind ? 'sel ' + kind : ''}" data-act="sayPick" data-k="${kind}">${txt}</button>`; }).join('');
+    const fb = pick ? `<div class="fb ${pick} pop"><span class="ic">${D.sayFb[pick][0]}</span><div>${D.sayFb[pick][1]}</div></div>` : '';
+    return `<section class="card fade"><div class="qhead"><span class="qtag">말 고르기 · ${sc.t}</span><span class="qnum">${i + 1} / 4</span></div>
+      <div class="scene"><span class="ic">${sc.ic}</span><p>${sc.q}</p></div>
+      <p style="font-weight:800;margin:0 0 10px">내 마음과 친구 마음을 함께 담은 말은 무엇일까요?</p>
+      <div class="says">${opts}</div>${fb}
+      <div class="row sb mt"><button class="btn ghost" data-act="prevSay" ${i === 0 ? 'disabled' : ''}>◀ 이전</button>
+        <button class="btn" data-act="nextSay" ${pick ? '' : 'disabled'}>${i === 3 ? '내 말로 고쳐 쓰기 ▶' : '다음 ▶'}</button></div></section>`;
+  },
+  mine() {
+    const f = D.fix[side()], m = S.mine, chips = (arr, k) => `<div class="chips">${arr.map(c => `<button class="chip" data-act="chip" data-f="${k}" data-t="${esc(c)}">${c}</button>`).join('')}</div>`;
+    return `<section class="card fade">${guide('이번에는 아쉬운 말을 직접 고쳐 볼 차례야.<br>세 조각을 이어 붙이면 마음이 잘 전해지는 말이 돼!')}
+      <div class="scene"><span class="ic">🗨️</span><div><p>${f.sit}</p><p style="font-weight:600;color:#9b3424;margin-top:6px">아쉬운 말: ${f.said}</p><p class="hint" style="margin-top:4px">${f.why}</p></div></div>
+      <div class="formula"><div>① 내 마음<small>나는 어떤지</small></div><div>② 친구 마음<small>친구는 어떨지</small></div><div>③ 바라는 것<small>어떻게 하면 좋을지</small></div></div>
+      <label class="q" for="c1In">① 내 마음</label><input class="line" id="c1In" data-f="c1" value="${esc(m.c1)}" placeholder="나는 ○○해.">${chips(D.mine.c1, 'c1')}
+      <label class="q" for="c2In">② 친구 마음</label><input class="line" id="c2In" data-f="c2" value="${esc(m.c2)}" placeholder="너는 ○○하구나.">${chips(D.mine.c2, 'c2')}
+      <label class="q" for="c3In">③ 바라는 것</label><input class="line" id="c3In" data-f="c3" value="${esc(m.c3)}" placeholder="우리 ○○하자.">${chips(D.mine.c3, 'c3')}
+      <label class="q">✨ 이어 붙인 나의 말</label><div class="preview" id="preview"></div>
+      <div class="row mt"><button class="btn ghost" data-act="speak" id="speakBtn">🔊 소리 내어 들어 보기</button><span class="hint">들어 본 다음, 나도 친구에게 말하듯 따라 해 봐요.</span></div></section>
+      <div class="row sb mt"><button class="btn ghost" data-act="backSay">◀ 말 고르기</button><button class="btn gold" data-act="finishStage" data-n="4">여행 마치기 🎉</button></div>`;
+  },
+  final() {
+    const t = myType(), st = S.story, mineTxt = mineSentence(), right = S.first.filter(k => k === 'both').length;
+    const ans = v => v ? esc(v) : '<span style="color:#b9ae9c">(쓰지 않았어요)</span>';
+    return `<div class="row sb noprint" style="margin-bottom:14px"><h2 style="margin:0">🎉 여행 완료!</h2><div class="row"><button class="btn gold" data-act="print">🖨️ 인쇄 · PDF 저장</button><button class="btn ghost" data-act="toResult">결과 다시 보기</button></div></div>
+      <section class="sheet fade" id="sheet"><div class="head"><div><div class="stageNo">마음 기차 말하기 여행 · 활동 기록</div><h2>${nm()}의 말하기 색깔: ${t.ic} ${t.n}</h2><div style="color:var(--sub);font-weight:600">${t.tag}</div></div>
+        <div style="width:90px;flex:0 0 90px">${tori('happy')}</div></div>
+        <div class="sec"><h3>1·2단계 · 말하기 저울</h3>${gauge(score(), 32)}
+          ${D.areas.map((ar, i) => { const v = areaScore(i); return `<div class="areaRow"><div class="n">${ar.ic} ${ar.n}</div>${gauge(v, 8, true)}<small>${v >= 3 ? ar.hi : v <= -3 ? ar.lo : ar.mid}</small></div>`; }).join('')}</div>
+        <div class="cols sec"><div><h3>좋은 점</h3><div class="ans">${t.good[0]}</div></div><div><h3>나의 말하기 미션</h3><div class="ans">${t.go}</div></div></div>
+        ${S.opp ? `<div class="sec"><h3>반대쪽 친구의 마음</h3><div class="ans">${esc(S.opp)}</div></div>` : ''}
+        <div class="sec"><h3>3단계 · 이야기 속 인물과 나${st.who ? ' (' + esc(st.who) + ')' : ''}</h3>
+          <div class="cols"><div><b>닮은 점</b><div class="ans">${ans(st.like)}</div></div><div><b>다른 점</b><div class="ans">${ans(st.diff)}</div></div></div>
+          <div style="margin-top:10px"><b>친구와 나눌 질문</b><div class="ans">${ans(st.ask)}</div></div></div>
+        <div class="sec"><h3>4단계 · 마음을 담은 나의 말 (첫 시도에 알맞은 말 고르기 ${right}/4)</h3><div class="ans" style="font-size:18px;font-weight:700">${ans(mineTxt)}</div></div>
+        <div class="sec"><h3>오늘 알게 된 것</h3><div class="learned">${D.learned.map(x => `<div>${x}</div>`).join('')}</div></div>
+      </section>
+      <div class="row c mt noprint"><button class="btn ghost" data-act="reset">새 여행 시작하기</button></div>`;
+  }
+};
+
+function mineSentence() { return [S.mine.c1, S.mine.c2, S.mine.c3].map(x => x.trim()).filter(Boolean).join(' '); }
+function updatePreview() { const el = $('#preview'); if (!el) return; const t = mineSentence(); el.textContent = t || '세 조각을 쓰면 여기에 이어져요.'; el.classList.toggle('empty', !t); }
+
+function render() {
+  if (!V[S.phase]) S.phase = 'cover';
+  $('#app').innerHTML = V[S.phase]();
+  /* 같은 화면 안에서 고르기만 바뀐 경우에는 등장 효과를 다시 넣지 않음 */
+  const key = S.phase + S.qi + '/' + S.si;
+  if (key === render.last) document.querySelectorAll('#app .fade, #app .typeIcon.pop').forEach(el => el.classList.remove('fade', 'pop'));
+  render.last = key;
+  updateSteps();
+  updatePreview();
+  if (S.phase === 'name') setTimeout(() => { const n = $('#nameIn'); if (n) n.focus(); }, 50);
+}
+
+/* ───────── 창 ───────── */
+function modal(html) { const m = $('#modal'); m.innerHTML = `<div class="card pop">${html}</div>`; m.classList.remove('hide'); }
+function closeModal() { $('#modal').classList.add('hide'); $('#modal').innerHTML = ''; }
+function finishStage(n, next) {
+  if (!S.done.includes(n)) S.done.push(n);
+  sfx.stamp(); save();
+  modal(`<div class="center"><div style="font-size:72px" class="pop">🎫</div><h2>${n}단계 도장 쾅!</h2><p class="lead">${D.stages[n - 1].t}${D.stages[n - 1].j} 마쳤어요.</p><button class="btn gold" data-act="closeGo" data-next="${next}">다음으로 ▶</button></div>`);
+}
+
+/* ───────── 동작 ───────── */
+const ACT = {
+  home: () => { if (S.phase !== 'cover') S.resume = S.phase; go('cover'); },
+  help: () => modal(`<h2>활동 방법</h2><ol>${D.help.map(([a, b]) => `<li><b>${a}</b><br>${b}</li>`).join('')}</ol><div class="row c"><button class="btn" data-act="close">알겠어요</button></div>`),
+  sound: () => { PREF.mute = !PREF.mute; savePref(); updateSteps(); sfx.pick(); },
+  reset: () => modal(`<div class="center"><h2>새로 시작할까요?</h2><p class="lead">지금까지의 기록이 모두 지워져요.</p><div class="row c"><button class="btn ghost" data-act="close">아니요</button><button class="btn" data-act="doReset">새로 시작</button></div></div>`),
+  doReset: () => { closeModal(); S = fresh(); go('cover'); },
+  close: closeModal,
+  closeGo: el => { closeModal(); const nx = el.dataset.next; if (nx === 'final') { sfx.done(); go('final'); } else go('intro', { stage: +nx }); },
+  toName: () => { sfx.pick(); go('name'); },
+  continue: () => { sfx.pick(); go(S.resume || (S.name ? 'intro' : 'name'), { stage: S.stage || 1 }); },
+  setName: () => { const v = ($('#nameIn').value || '').trim(); if (!v) { toast('이름을 먼저 써 주세요.'); $('#nameIn').focus(); return; } sfx.good(); go('intro', { name: v, stage: 1 }); },
+  startStage: () => { sfx.pick(); go({ 1: 'q', 2: 'result', 3: 'story', 4: 'say' }[S.stage]); },
+  choose: el => { const c = el.dataset.c, a = S.ans[S.qi] || {}; S.ans[S.qi] = { c, w: a.c === c ? a.w : 0 }; sfx.pick(); save(); render(); const s = $('#strength'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); },
+  weight: el => { S.ans[S.qi].w = +el.dataset.w; sfx.tap(); save(); render(); },
+  prevQ: () => { if (S.qi > 0) { S.qi--; save(); render(); } },
+  nextQ: () => {
+    const a = S.ans[S.qi]; if (!a || !a.c || !a.w) return;
+    if (S.qi === 15) { finishStage(1, 2); return; }
+    if (S.qi % 4 === 3) { sfx.stamp(); toast(`${D.areas[D.sit[S.qi].a].ic} ${D.areas[D.sit[S.qi].a].n} 통과! 다음 역으로 출발`); } else sfx.tap();
+    S.qi++; save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+  redoQ: () => go('q', { qi: 0 }),
+  toResult: () => go('result'),
+  finishStage: el => { const n = +el.dataset.n; finishStage(n, n === 4 ? 'final' : n + 1); },
+  chip: el => {
+    const f = el.dataset.f, inp = document.querySelector(`[data-f="${f}"]:not(.chip)`); if (!inp) return;
+    const t = el.dataset.t, i = t.indexOf('○○');
+    inp.value = inp.value ? inp.value.replace(/\s*$/, ' ') + t : t; inp.focus();
+    const at = i >= 0 ? inp.value.length - t.length + i : inp.value.length; inp.setSelectionRange(at, at + (i >= 0 ? 2 : 0));
+    inp.dispatchEvent(new Event('input', { bubbles: true })); sfx.tap();
+  },
+  pickAsk: el => { S.story.ask = el.dataset.t; sfx.tap(); save(); render(); },
+  sayPick: el => {
+    const k = el.dataset.k; S.picks[S.si] = k; if (!S.first[S.si]) S.first[S.si] = k;
+    k === 'both' ? sfx.good() : sfx.soft(); save(); render();
+    const fb = document.querySelector('.fb'); if (fb) fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+  prevSay: () => { if (S.si > 0) { S.si--; save(); render(); } },
+  nextSay: () => { if (S.si < 3) { S.si++; sfx.tap(); go('say'); } else go('mine'); },
+  backSay: () => go('say', { si: 3 }),
+  speak: () => {
+    const t = mineSentence(); if (!t) { toast('먼저 세 조각을 써 주세요.'); return; }
+    if (!('speechSynthesis' in window)) { toast('이 기기에서는 읽어 주기를 쓸 수 없어요.'); return; }
+    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ko-KR'; u.rate = .95; speechSynthesis.speak(u);
+  },
+  print: () => window.print()
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (el) { ACT[el.dataset.act] && ACT[el.dataset.act](el); return; }
+  if (e.target.id === 'modal') closeModal();
+});
+document.addEventListener('input', e => {
+  const f = e.target.dataset && e.target.dataset.f; if (!f) return;
+  if (f in S.story) S.story[f] = e.target.value;
+  else if (f in S.mine) { S.mine[f] = e.target.value; updatePreview(); }
+  else if (f === 'opp') S.opp = e.target.value;
+  save();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('#modal').classList.contains('hide')) closeModal();
+  if (e.key === 'Enter' && e.target.id === 'nameIn') ACT.setName();
+});
+$('#brandBird').innerHTML = tori('happy');
+render();
+</script>
+</body>
+</html>
